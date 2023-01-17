@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:mongo="http://www.mulesoft.org/schema/mule/mongo"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mongo/current/mule-mongo.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="get-greeting" doc:id="73bf7ece-5de7-4d04-9c0f-a8ee24b058e9" >
+		<mongo:find-documents doc:name="Find documents" doc:id="cbdad2a3-9d4e-4ddf-a419-9b8341649da8" config-ref="MongoDB_Config" collectionName="greeting" fields="greeting, greet_en">
+			<mongo:query ><![CDATA[#[vars.querystr]]]></mongo:query>
+		</mongo:find-documents>
+		<logger level="INFO" doc:name="log-query-response" doc:id="dc980ccf-4c51-4442-9b4f-1067c52a4aa5" message="#[output application/json --- payload]"/>
+		<set-variable value="#[sizeOf(payload)]" doc:name="" doc:id="c64c53af-f366-43b3-b781-584586c07f63" variableName="size"/>
+		<choice doc:name="Choice" doc:id="73587692-bf4d-4f80-9d2e-1ee11b778d4b" >
+			<when expression="#[vars.size == 1]">
+				<ee:transform doc:name="generate-response">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+ greeting: payload[0].greeting,
+ language: vars.language
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="generate-default-response">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+ greeting: vars.greeting,
+ language: vars.language
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+			</otherwise>
+		</choice>
+	</sub-flow>
+</mule>

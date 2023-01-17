@@ -126,37 +126,14 @@ output application/json
     <flow name="get:\greeting:greeting-api-config">
         <set-variable value="#[attributes.queryParams.greet]" doc:name="SetGreeting" doc:id="85b265b9-6060-42ac-a930-dbba8aebc4cb" variableName="greeting" />
 		<set-variable value="#[attributes.queryParams.lang]" doc:name="SetLanguage" doc:id="f1bd29e2-015c-4a71-a237-91d5baeaf6d2" variableName="language"/>
-		<ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
+		<ee:transform doc:name="create-querystr" doc:id="63533bd9-a8fa-4ecf-85f9-d8fe94e98ae6" >
+			<ee:variables >
+				<ee:set-variable variableName="querystr" ><![CDATA[%dw 2.0
 output application/json
 ---
-if (vars.language == "en" and vars.greeting == "hello") 
-{
- greeting: "hello",
- language: vars.language
-}
-else if (vars.language == "es" and vars.greeting == "hello")
-{
-	greeting: "hola",
- 	language: vars.language
-}
-else if (vars.language == "en" and vars.greeting == "good morning")
-{
-	greeting: "good morning",
- 	language: vars.language
-}
-else if (vars.language == "es" and vars.greeting == "good morning")
-{
-	greeting: "buenos dios",
- 	language: vars.language
-}
-else
-{
-	greeting: vars.greeting,
- 	language: vars.language
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+{ "greet_en": vars.greeting, "lang": vars.language}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="get-greeting" doc:id="6db74fe9-7b1e-448b-9a0c-2e39d363818b" name="get-greeting"/>
     </flow>
 </mule>

@@ -1,0 +1,4 @@
+db.greeting.findOne( { greet_en: "hello"} );
+db.greeting.insertOne( { greet_en: "hello", lang: "es", greeting: "hola" } );
+db.greeting.insertOne( { greet_en: "hello", lang: "hi", greeting: "namaste" } );
+db.greeting.insertOne( { greet_en: "good morning", lang: "es", greeting: "bueno dias" } );
