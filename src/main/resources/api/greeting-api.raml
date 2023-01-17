@@ -1,23 +1,26 @@
 #%RAML 1.0
 title: greeting-api
 
-types:
-  greetparam: !include datatypes/greetingtypes.raml
+uses:
+  greetingLib: datatypes/greetinglib.raml
 
 /greeting:
   get:
     description: greeting
     queryParameters:
       greet:
-        description: greet as you say hello
-        type: greetparam
+        description: greeting
+        type: greetingLib.greet
+        required: false
+      lang:
+        description: language
+        type: greetingLib.lang
         required: false
     responses:
       200:
         body:
           application/json:
-            type: string
+            type: object
             examples:
               english: !include examples/english.raml
               spanish: !include examples/spanish.raml
-              hindi: !include examples/hindi.raml
